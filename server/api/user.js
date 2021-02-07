@@ -7,7 +7,7 @@ const { token } = require('morgan');
 const SALT = 8;
 
 // REGISTER
-router.post('/register', async (req, res) => {
+router.post('/api/register', async (req, res) => {
   try {
     const { email, password } = req.body;
     const newUser = {
@@ -32,7 +32,7 @@ router.post('/register', async (req, res) => {
 });
 
 // LOGIN
-router.post('/login', async (req, res) => {
+router.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const [user] = await db.query(`select * from users where email=?`, [email]);
@@ -43,11 +43,13 @@ router.post('/login', async (req, res) => {
       if (!isMatch) {
         res.status(400).json({ msg: 'Password does not match!' });
       } else {
+        console.log('id ', user);
         const payload = {
           user: {
-            id: user[0].id,
+            userId: user[0].idUser,
           },
         };
+
         jwt.sign(
           payload,
           process.env.JWT_SECRET,
